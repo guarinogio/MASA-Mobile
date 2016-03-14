@@ -1,7 +1,7 @@
-package com.example.masa.massiveattendancescannerapplication.Services;
+package massiveattendancescannerapplication.Services;
 
-import com.example.masa.massiveattendancescannerapplication.Data.Course;
-import com.example.masa.massiveattendancescannerapplication.Data.Section;
+import massiveattendancescannerapplication.Data.Course;
+import massiveattendancescannerapplication.Data.Section;
 
 import java.io.IOException;
 import java.util.*;

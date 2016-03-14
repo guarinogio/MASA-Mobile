@@ -1,4 +1,4 @@
-package com.example.masa.massiveattendancescannerapplication.Services;
+package massiveattendancescannerapplication.Services;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.example.masa.massiveattendancescannerapplication.Data.Course;
-import com.example.masa.massiveattendancescannerapplication.R;
+import massiveattendancescannerapplication.Data.Course;
+import massiveattendancescannerapplication.R;
 
 import java.util.ArrayList;
 

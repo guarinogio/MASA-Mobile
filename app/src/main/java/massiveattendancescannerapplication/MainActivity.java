@@ -1,4 +1,4 @@
-package com.example.masa.massiveattendancescannerapplication;
+package massiveattendancescannerapplication;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package com.example.masa.massiveattendancescannerapplication.Data;
+package massiveattendancescannerapplication.Data;
 
 import org.json.JSONArray;
 import org.json.JSONException;

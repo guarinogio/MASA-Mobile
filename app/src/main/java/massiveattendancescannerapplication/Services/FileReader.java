@@ -1,4 +1,4 @@
-package com.example.masa.massiveattendancescannerapplication.Services;
+package massiveattendancescannerapplication.Services;
 
 import android.content.Context;
 import android.os.Environment;

@@ -1,4 +1,5 @@
-package com.example.masa.massiveattendancescannerapplication.Services;
+package massiveattendancescannerapplication.Services;
+
 import android.util.Log;
 
 import org.apache.http.HttpResponse;

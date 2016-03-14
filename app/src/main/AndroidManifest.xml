@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.masa.massiveattendancescannerapplication" >
+    package="massiveattendancescannerapplication" >
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.example.masa.massiveattendancescannerapplication.MainActivity"
+            android:name="massiveattendancescannerapplication.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,26 +23,26 @@
         <activity
             android:name=".CourseActivity"
             android:label="@string/title_course_activity"
-            android:parentActivityName="com.example.masa.massiveattendancescannerapplication.MainActivity" >
+            android:parentActivityName="massiveattendancescannerapplication.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.masa.massiveattendancescannerapplication.MainActivity" />
+                android:value="massiveattendancescannerapplication.MainActivity" />
         </activity>
         <activity
             android:name=".SectionActivity"
             android:label="@string/title_section_activity"
-            android:parentActivityName="com.example.masa.massiveattendancescannerapplication.CourseActivity" >
+            android:parentActivityName="massiveattendancescannerapplication.CourseActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.masa.massiveattendancescannerapplication.CourseActivity" />
+                android:value="massiveattendancescannerapplication.CourseActivity" />
         </activity>
         <activity
             android:name=".StudentActivity"
             android:label="@string/title_student_activity"
-            android:parentActivityName="com.example.masa.massiveattendancescannerapplication.CourseActivity" >
+            android:parentActivityName="massiveattendancescannerapplication.CourseActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.masa.massiveattendancescannerapplication.CourseActivity" />
+                android:value="massiveattendancescannerapplication.CourseActivity" />
         </activity>
     </application>
 

@@ -1,4 +1,4 @@
-package com.example.masa.massiveattendancescannerapplication;
+package massiveattendancescannerapplication;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-import com.example.masa.massiveattendancescannerapplication.Services.ServiceHandler;
+import massiveattendancescannerapplication.Services.ServiceHandler;
 
 
 public class StudentActivity extends ListActivity {

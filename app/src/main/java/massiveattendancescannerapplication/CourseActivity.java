@@ -1,4 +1,6 @@
-package com.example.masa.massiveattendancescannerapplication;
+package massiveattendancescannerapplication;
+
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,61 +23,58 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.masa.massiveattendancescannerapplication.Services.JSONParser;
-import com.example.masa.massiveattendancescannerapplication.Services.ServiceHandler;
+import massiveattendancescannerapplication.Services.JSONParser;
+import massiveattendancescannerapplication.Services.ServiceHandler;
 
-public class SectionActivity extends ListActivity {
+public class CourseActivity extends ListActivity {
 
     private ProgressDialog pDialog;
     JSONParser jsonParser = new JSONParser();
-    ArrayList<HashMap<String, String>> sectionList;
-    JSONArray courses = null;
-    String course_id, course_name;
-    private static final String URL = "http://192.168.0.101:3000/sections";
+    ArrayList<HashMap<String, String>> courseList;
+    JSONArray course = null;
+    private static final String URL = "http://192.168.0.101:3000/courses";
+    // ALL JSON node names
     private static final String TAG_ID = "_id";
     private static final String TAG_NAME = "name";
-    private static final String TAG_SEMESTER = "semester";
-
+    private static final String TAG_CODE = "code";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.section_activity);
+        setContentView(R.layout.course_activity);
 
-        Intent i = getIntent();
-        course_id = i.getStringExtra("course_id");
-        sectionList = new ArrayList<HashMap<String, String>>();
-        new LoadSections().execute();
+
+        courseList = new ArrayList<HashMap<String, String>>();
+        new LoadCourses().execute();
+
         ListView lv = getListView();
 
         /**
-         * Listview on item click listener
-         * StudentActivity will be lauched by passing album id, song id
+         * Listview item click listener
+         * SectionActivity will be lauched by passing album id
          * */
         lv.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View view, int arg2,
                                     long arg3) {
-                // On selecting single track get song information
-                Intent i = new Intent(getApplicationContext(), StudentActivity.class);
+                // on selecting a single album
+                // SectionActivity will be launched to show tracks inside the album
+                Intent i = new Intent(getApplicationContext(), SectionActivity.class);
 
-                // to get song information
-                // both album id and song is needed
+                // send album id to tracklist activity to get list of songs under that album
                 String course_id = ((TextView) view.findViewById(R.id.course_id)).getText().toString();
-                String section_id = ((TextView) view.findViewById(R.id.section_id)).getText().toString();
-
                 i.putExtra("course_id", course_id);
-                i.putExtra("section_id", section_id);
 
                 startActivity(i);
             }
         });
-
     }
 
-    class LoadSections extends AsyncTask<String, String, String> {
+    /**
+     * Background Async Task to Load all Courses by making http request
+     * */
+    class LoadCourses extends AsyncTask<String, String, String> {
 
         /**
          * Before starting background thread Show Progress Dialog
@@ -83,16 +82,18 @@ public class SectionActivity extends ListActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(SectionActivity.this);
-            pDialog.setMessage("Cargando Secciones ...");
+            pDialog = new ProgressDialog(CourseActivity.this);
+            pDialog.setMessage("Cargando Materias ...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(false);
             pDialog.show();
         }
 
-
+        /**
+         * getting Courses JSON
+         * */
         protected String doInBackground(String... args) {
-            // Building Parameters
+
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             ServiceHandler sh = new ServiceHandler();
             String JSONString = null;
@@ -103,27 +104,27 @@ public class SectionActivity extends ListActivity {
             }
 
             try {
-                JSONArray sections = new JSONArray(JSONString);
+                course = new JSONArray(JSONString);
 
-                for (int i = 0; i < sections.length(); i++) {
-                    JSONObject c = sections.getJSONObject(i);
+                // looping through All courses
+                for (int i = 0; i < course.length(); i++) {
+                    JSONObject c = course.getJSONObject(i);
 
-                    String section_id = c.getString(TAG_ID);
-                    String section_no = String.valueOf(i + 1);
+                    // Storing each json item values in variable
+                    String id = c.getString(TAG_ID);
                     String name = c.getString(TAG_NAME);
-                    String semester = c.getString(TAG_SEMESTER);
+                    String code = c.getString(TAG_CODE);
 
                     // creating new HashMap
                     HashMap<String, String> map = new HashMap<String, String>();
 
-                    map.put("course_id", course_id);
-                    map.put(TAG_ID, section_id);
-                    map.put("section_no", section_no + ".");
+                    // adding each child node to HashMap key => value
+                    map.put(TAG_ID, id);
                     map.put(TAG_NAME, name);
-                    map.put(TAG_SEMESTER, semester);
+                    map.put(TAG_CODE, code);
 
                     // adding HashList to ArrayList
-                    sectionList.add(map);
+                    courseList.add(map);
                 }
 
             } catch (JSONException e) {
@@ -137,7 +138,7 @@ public class SectionActivity extends ListActivity {
          * After completing background task Dismiss the progress dialog
          * **/
         protected void onPostExecute(String file_url) {
-            // dismiss the dialog after getting all tracks
+            // dismiss the dialog after getting all courses
             pDialog.dismiss();
             // updating UI from Background Thread
             runOnUiThread(new Runnable() {
@@ -146,16 +147,13 @@ public class SectionActivity extends ListActivity {
                      * Updating parsed JSON data into ListView
                      * */
                     ListAdapter adapter = new SimpleAdapter(
-                            SectionActivity.this, sectionList,
-                            R.layout.list_item_sections, new String[] { "course_id", TAG_ID, "track_no",
-                            TAG_NAME, TAG_SEMESTER }, new int[] {
-                            R.id.course_id, R.id.section_id, R.id.section_no, R.id.section_name, R.id.section_semester });
+                            CourseActivity.this, courseList,
+                            R.layout.list_item_courses, new String[] { TAG_ID,
+                            TAG_NAME, TAG_CODE }, new int[] {
+                            R.id.course_id, R.id.course_name, R.id.course_code });
                     setListAdapter(adapter);
-                    setTitle(course_name);
                 }
             });
-
         }
-
     }
 }

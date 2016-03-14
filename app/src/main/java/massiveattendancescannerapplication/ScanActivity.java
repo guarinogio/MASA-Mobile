@@ -1,4 +1,4 @@
-package com.example.masa.massiveattendancescannerapplication;
+package massiveattendancescannerapplication;
 
 
 import android.app.Activity;
