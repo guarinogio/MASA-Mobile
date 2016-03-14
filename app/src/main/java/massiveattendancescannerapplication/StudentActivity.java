@@ -1,4 +1,5 @@
 package massiveattendancescannerapplication;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,12 +11,9 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-
 import massiveattendancescannerapplication.Services.ServiceHandler;
 
 
@@ -41,7 +39,6 @@ public class StudentActivity extends ListActivity {
         section_id = i.getStringExtra("section_id");
         studentList = new ArrayList<>();
         new LoadStudents().execute();
-
         ListView lv = getListView();
     }
 
@@ -68,8 +65,6 @@ public class StudentActivity extends ListActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            Log.d("Section JSON: ", JSONString);
 
             try {
                 JSONArray sections = new JSONArray(JSONString);
