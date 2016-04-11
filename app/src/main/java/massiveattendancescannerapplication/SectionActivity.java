@@ -23,8 +23,12 @@ public class SectionActivity extends ListActivity {
 
     private ProgressDialog pDialog;
     ArrayList<HashMap<String, String>> sectionList;
-    String course_id, course_name;
-    private static final String URL = "http://192.168.0.101:3000/sections";
+    JSONArray courses,sections;
+    JSONObject professor;
+    String JSONString, course_id, course_name;
+    private static final String COURSE = "courses";
+    private static final String SECTION = "sections";
+    private static final String URL = "http://192.168.0.106:3000/professors/56f5fd3a20047f3c15b05f0e";
     private static final String TAG_ID = "_id";
     private static final String TAG_NAME = "name";
     private static final String TAG_SEMESTER = "semester";
@@ -72,7 +76,6 @@ public class SectionActivity extends ListActivity {
 
         protected String doInBackground(String... args) {
             ServiceHandler sh = new ServiceHandler();
-            String JSONString = null;
             try {
                 JSONString = sh.getServiceCall(URL);
             } catch (IOException e) {
@@ -80,29 +83,40 @@ public class SectionActivity extends ListActivity {
             }
 
             try {
-                JSONArray sections = new JSONArray(JSONString);
-                for (int i = 0; i < sections.length(); i++) {
-                    JSONObject c = sections.getJSONObject(i);
+                professor = new JSONObject(JSONString);
+                if (professor.has(COURSE)) {
+                    courses = professor.getJSONArray(COURSE);
+                    for (int i = 0; i < courses.length(); i++) {
+                        JSONObject c = courses.getJSONObject(i);
+                        String course = c.getString(TAG_ID);
+                        assert course != null;
+                        if (course.equals(course_id)){
+                            if (c.has(SECTION)){
+                                sections = c.getJSONArray(SECTION);
+                                for (int j = 0; j < sections.length(); j++) {
+                                    JSONObject s = sections.getJSONObject(j);
 
-                    String section_id = c.getString(TAG_ID);
-                    String section_no = String.valueOf(i + 1);
-                    String name = c.getString(TAG_NAME);
-                    String semester = c.getString(TAG_SEMESTER);
+                                    String section_id = s.getString(TAG_ID);
+                                    String section_no = String.valueOf(j + 1);
+                                    String name = s.getString(TAG_NAME);
+                                    String semester = s.getString(TAG_SEMESTER);
 
-
-                    HashMap<String, String> map = new HashMap<String, String>();
-                    map.put("course_id", course_id);
-                    map.put(TAG_ID, section_id);
-                    map.put("section_no", section_no + ".");
-                    map.put(TAG_NAME, name);
-                    map.put(TAG_SEMESTER, semester);
-
-                    sectionList.add(map);
+                                    HashMap<String, String> map = new HashMap<String, String>();
+                                    map.put("course_id", course_id);
+                                    map.put(TAG_ID, section_id);
+                                    map.put("section_no", section_no + ".");
+                                    map.put(TAG_NAME, name);
+                                    map.put(TAG_SEMESTER, semester);
+                                    sectionList.add(map);
+                                }
+                            }
+                        }
+                    }
                 }
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
             return null;
         }
 
@@ -110,7 +124,6 @@ public class SectionActivity extends ListActivity {
             pDialog.dismiss();
             runOnUiThread(new Runnable() {
                 public void run() {
-
                     ListAdapter adapter = new SimpleAdapter(
                             SectionActivity.this, sectionList,
                             R.layout.list_item_sections, new String[] { "course_id", TAG_ID, "track_no",

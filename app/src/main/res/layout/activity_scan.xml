@@ -16,6 +16,13 @@
         android:text="@string/scanning"
         android:enabled="false"
         />
+    <Button
+        android:id="@+id/terminate"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/terminate"
+        android:enabled="false"
+        />
     <ListView
         android:id="@+id/devicesfound"
         android:layout_width="fill_parent"

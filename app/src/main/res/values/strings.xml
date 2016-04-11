@@ -6,7 +6,7 @@
     <string name="button_scan">Escanear</string>
     <string name="button_show_classes">Listar Materias</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_scan">Escaneando...</string>
+    <string name="title_activity_scan">Escaneando…</string>
     <string name="button_show_class">Mostrar Clases</string>
     <string name="button_add_class">Añadir Clases</string>
     <string name="button_rm_class">Eliminar Clases</string>
@@ -33,5 +33,6 @@
     <string name="title_course_activity">Materias</string>
     <string name="title_section_activity">Secciones</string>
     <string name="title_student_activity">Estudiantes</string>
+    <string name="terminate">Culminar Clase</string>
 
 </resources>

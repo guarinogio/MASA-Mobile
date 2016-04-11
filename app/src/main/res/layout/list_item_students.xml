@@ -2,21 +2,21 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content" >
 
-    <!-- Album id / Hidden by default -->
+    <!-- Section DB ID/ Hidden by default -->
     <TextView
         android:id="@+id/section_id"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
-    <!-- Song id / Hidden by default -->
+    <!-- Student DB ID/ Hidden by default -->
     <TextView
         android:id="@+id/student_id"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
-    <!-- Track serial no -->
+    <!-- Student ID number -->
     <TextView
         android:id="@+id/student_no"
         android:layout_width="wrap_content"
@@ -28,7 +28,7 @@
         android:textSize="16dip"
         android:layout_alignParentLeft="true"/>
 
-    <!-- Song Name -->
+    <!-- Student Last Name -->
     <TextView
         android:id="@+id/student_lastname"
         android:layout_width="wrap_content"
@@ -36,11 +36,11 @@
         android:paddingBottom="15dip"
         android:paddingLeft="5dip"
         android:paddingTop="15dip"
-        android:textColor="#000000"
+        android:textColor="#ff0000"
         android:textSize="16dip"
         android:layout_toRightOf="@+id/student_no"/>
 
-    <!-- Song duration -->
+    <!-- Student First Name -->
     <TextView
         android:id="@+id/student_name"
         android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
         android:paddingBottom="15dip"
         android:paddingLeft="5dip"
         android:paddingTop="15dip"
-        android:textColor="#000000"
+        android:textColor="#ffff0000"
         android:textSize="16dip"
         android:layout_toRightOf="@+id/student_lastname"/>
 

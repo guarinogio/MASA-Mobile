@@ -5,9 +5,10 @@ import android.util.Log;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -70,31 +71,25 @@ public class ServiceHandler {
      * @author Reynaldo
      */
 
-    public boolean postServiceCall(String url, JSONArray jsonArray) throws IOException {
+    public boolean postServiceCall(String url, JSONObject jsonobject) throws IOException {
         int inputStream;
         response="";
-        try {
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(url);
 
-            String json = jsonArray.toString();
-            StringEntity se = new StringEntity(json);
-            httpPost.setEntity(se);
-            httpPost.setHeader("Accept", "application/json");
-            httpPost.setHeader("Content-type", "application/json");
-            HttpResponse httpResponse = httpclient.execute(httpPost);
-            inputStream = httpResponse.getStatusLine().getStatusCode();
-            if (inputStream == 200){
-                return true;
-            }else {
-                return false;
-            }
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpPut httpPut = new HttpPut(url);
 
-
-        } catch (Exception e) {
-            Log.d("InputStream", e.getLocalizedMessage());
+        String json = jsonobject.toString();
+        StringEntity se = new StringEntity(json);
+        httpPut.setEntity(se);
+        httpPut.setHeader("Accept", "application/json");
+        httpPut.setHeader("Content-type", "application/json");
+        HttpResponse httpResponse = httpclient.execute(httpPut);
+        inputStream = httpResponse.getStatusLine().getStatusCode();
+        if (inputStream == 200){
+            return true;
+        }else {
+            return false;
         }
-        return false;
     }
 
     private static String convertInputStreamToString(InputStream inputStream) throws IOException{

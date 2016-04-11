@@ -23,11 +23,15 @@ public class CourseActivity extends ListActivity {
 
     private ProgressDialog pDialog;
     ArrayList<HashMap<String, String>> courseList;
-    JSONArray course = null;
-    private static final String URL = "http://192.168.0.101:3000/courses";
+    JSONArray courses;
+    JSONObject professor;
+    String JSONString;
+    private static final String COURSE = "courses";
+    private static final String URL = "http://192.168.0.106:3000/professors/56f5fd3a20047f3c15b05f0e";
     private static final String TAG_ID = "_id";
     private static final String TAG_NAME = "name";
     private static final String TAG_CODE = "code";
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,7 +70,6 @@ public class CourseActivity extends ListActivity {
         protected String doInBackground(String... args) {
 
             ServiceHandler sh = new ServiceHandler();
-            String JSONString = null;
             try {
                 JSONString = sh.getServiceCall(URL);
             } catch (IOException e) {
@@ -74,20 +77,20 @@ public class CourseActivity extends ListActivity {
             }
 
             try {
-                course = new JSONArray(JSONString);
-
-                for (int i = 0; i < course.length(); i++) {
-                    JSONObject c = course.getJSONObject(i);
-                    String id = c.getString(TAG_ID);
-                    String name = c.getString(TAG_NAME);
-                    String code = c.getString(TAG_CODE);
-
-                    HashMap<String, String> map = new HashMap<String, String>();
-                    map.put(TAG_ID, id);
-                    map.put(TAG_NAME, name);
-                    map.put(TAG_CODE, code);
-
-                    courseList.add(map);
+                professor = new JSONObject(JSONString);
+                if (professor.has(COURSE)) {
+                    courses = professor.getJSONArray(COURSE);
+                    for (int i = 0; i < courses.length(); i++) {
+                        JSONObject c = courses.getJSONObject(i);
+                        String id = c.getString(TAG_ID);
+                        String name = c.getString(TAG_NAME);
+                        String code = c.getString(TAG_CODE);
+                        HashMap<String, String> map = new HashMap<String, String>();
+                        map.put(TAG_ID, id);
+                        map.put(TAG_NAME, name);
+                        map.put(TAG_CODE, code);
+                        courseList.add(map);
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
