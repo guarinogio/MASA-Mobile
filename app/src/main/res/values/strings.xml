@@ -34,5 +34,8 @@
     <string name="title_section_activity">Secciones</string>
     <string name="title_student_activity">Estudiantes</string>
     <string name="terminate">Culminar Clase</string>
+    <string name="course_intro"> \n Bienvenido \n Lista de Materias Disponibles\n</string>
+    <string name="section_intro"> \n Lista de Secciones Disponibles\n</string>
+    <string name="student_intro"> \n Lista de Estudiantes de la Sección\n Recuerde que debe Escanear los dispositivos al menos una vez. \n</string>
 
 </resources>

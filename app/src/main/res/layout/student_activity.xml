@@ -6,9 +6,17 @@
     android:background="#ffffff">
 
     <TextView
+        android:text="@string/student_intro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/textView" />
+
+    <TextView
         android:id="@+id/bluetoothstate"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         />
 
     <Button
@@ -25,12 +33,6 @@
         />
 
     <ListView
-        android:id="@+id/devicesfound"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        />
-
-    <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -38,5 +40,11 @@
         android:dividerHeight="1dp"
         android:cacheColorHint="#00000000"
         />
+
+    <ListView
+    android:id="@+id/devicesfound"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    />
 
 </LinearLayout>

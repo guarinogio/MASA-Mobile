@@ -19,12 +19,12 @@ import android.os.Handler;
 
 public class TransmitterTask extends AsyncTask<JSONObject, Void, Void> {
 
-    private static final String URL = "http://192.168.0.106:3000/professors/56f5fd3a20047f3c15b05f0e";
+    String URL;
     boolean result;
 
     final  Handler myHandler = new Handler();
-    public TransmitterTask() {
-
+    public TransmitterTask(String URL) {
+        this.URL = URL;
     }
 
     protected Void doInBackground(JSONObject... professor) {

@@ -17,6 +17,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
+import massiveattendancescannerapplication.Services.FileReader;
 import massiveattendancescannerapplication.Services.ServiceHandler;
 
 public class CourseActivity extends ListActivity {
@@ -27,7 +29,7 @@ public class CourseActivity extends ListActivity {
     JSONObject professor;
     String JSONString;
     private static final String COURSE = "courses";
-    private static final String URL = "http://192.168.0.106:3000/professors/56f5fd3a20047f3c15b05f0e";
+    String URL;
     private static final String TAG_ID = "_id";
     private static final String TAG_NAME = "name";
     private static final String TAG_CODE = "code";
@@ -38,7 +40,7 @@ public class CourseActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.course_activity);
 
-
+        URL = FileReader.getUrl(getApplicationContext());
         courseList = new ArrayList<>();
         new LoadCourses().execute();
 

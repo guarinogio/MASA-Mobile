@@ -9,17 +9,24 @@ import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
@@ -28,6 +35,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import massiveattendancescannerapplication.Services.FileReader;
 import massiveattendancescannerapplication.Services.ServiceHandler;
 import massiveattendancescannerapplication.Services.TransmitterTask;
 
@@ -42,7 +50,7 @@ public class StudentActivity extends ListActivity {
     private static final String COURSE = "courses";
     private static final String SECTION = "sections";
     private static final String STUDENT = "students";
-    private static final String URL = "http://192.168.0.106:3000/professors/56f5fd3a20047f3c15b05f0e";
+    String URL;
     private static final String TAG_ID = "_id";
     private static final String TAG_NO = "id";
     private static final String TAG_NAME = "name";
@@ -58,12 +66,55 @@ public class StudentActivity extends ListActivity {
     TransmitterTask transmitterTask;
     ArrayAdapter<String> btArrayAdapter;
     int assist = 0;
+    boolean flag = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.student_activity);
+
         Intent i = getIntent();
+        URL = FileReader.getUrl(getApplicationContext());
+        ListView lv = getListView();
+
+        lv.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long rowId) {
+                AlertDialog.Builder adb = new AlertDialog.Builder(
+                        StudentActivity.this);
+                HashMap<String,String> map =(HashMap<String,String>) parent.getItemAtPosition(position);
+                String name = map.get("name");
+                String lastname = map.get("lastname");
+                final int index = Integer.parseInt(map.get("_id"));
+                adb.setTitle("Asistencia Manual");
+                adb.setMessage("¿Desea poner manualmente la asistencia del alumno "+lastname+", "+name+" ?"
+                        );
+                adb.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            JSONObject st = students.getJSONObject(index);
+                            JSONArray assistance = st.getJSONArray("assistanceTotal");
+                            assist = st.optInt("assistance");
+                            st.put("assistance", assist+1);
+                            JSONObject dayAssistance = new JSONObject();
+                            dayAssistance.put("day", currentDate);
+                            dayAssistance.put("assistance", true);
+                            assistance.put(dayAssistance);
+                            TextView t = (TextView) findViewById(R.id.student_name);
+                            t.setTextColor(Color.GREEN);
+                            TextView z = (TextView) findViewById(R.id.student_lastname);
+                            z.setTextColor(Color.GREEN);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+                adb.setNegativeButton("No", null);
+                adb.show();
+            }
+        });
 
         stateBluetooth = (TextView)findViewById(R.id.bluetoothstate);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -176,9 +227,24 @@ public class StudentActivity extends ListActivity {
                             StudentActivity.this, studentList,
                             R.layout.list_item_students, new String[]{"section_id", TAG_ID, TAG_NO,
                             TAG_NAME, TAG_LASTNAME}, new int[]{
-                            R.id.section_id, R.id.student_id, R.id.student_no, R.id.student_name, R.id.student_lastname});
-                    setListAdapter(adapter);
+                            R.id.section_id, R.id.student_id, R.id.student_no, R.id.student_name, R.id.student_lastname})
+/*                    {
+                        @Override
+                        public View getView(int position, View convertView, ViewGroup parent) {
+                            // Get the Item from ListView
+                            View view = super.getView(position, convertView, parent);
 
+                            // Initialize a TextView for ListView each Item
+                            TextView tv = (TextView) view.findViewById(android.R.id.text1);
+
+                            // Set the text color of TextView (ListView Item)
+                            tv.setTextColor(Color.RED);
+
+                            // Generate ListView Item using TextView
+                            return view;
+                        }
+                    }*/;
+                    setListAdapter(adapter);
                     setTitle(section_name);
                 }
             });
@@ -187,19 +253,19 @@ public class StudentActivity extends ListActivity {
 
     private void CheckBlueToothState(){
         if (bluetoothAdapter == null){
-            stateBluetooth.setText("Bluetooth NOT supported");
+            stateBluetooth.setText("Bluetooth NO soportado");
         }else{
             if (bluetoothAdapter.isEnabled()){
                 if(bluetoothAdapter.isDiscovering()){
-                    stateBluetooth.setText("Bluetooth is currently in device discovery process.");
+                    stateBluetooth.setText("Bluetooth esta en modo de Descubrimiento.");
                     btnScanDevice.setEnabled(false);
 
                 }else{
-                    stateBluetooth.setText("Bluetooth is Enabled.");
+                    stateBluetooth.setText("Bluetooth esta Activado.");
                     btnScanDevice.setEnabled(true);
                 }
             }else{
-                stateBluetooth.setText("Bluetooth is NOT Enabled!");
+                stateBluetooth.setText("Bluetooth NO esta Activado!!");
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             }
@@ -212,6 +278,7 @@ public class StudentActivity extends ListActivity {
         public void onClick(View arg0) {
             btArrayAdapter.clear();
             bluetoothAdapter.startDiscovery();
+            CheckBlueToothState();
         }};
 
     private Button.OnClickListener btnEndClassOnClickListener
@@ -219,39 +286,50 @@ public class StudentActivity extends ListActivity {
 
         @Override
         public void onClick(View arg0) {
-            try {
-                for (int x = 0; x < students.length(); x++) {
-                    JSONObject st;
-                    boolean scanned = false;
-                    st = students.getJSONObject(x);
-                    JSONArray assistance;
-                    assistance = st.getJSONArray("assistanceTotal");
-                    assert assistance != null;
-                    currentDate = SDF.format(new Date());
-                    for(int g=0; g<assistance.length(); g++) {
-                        JSONObject cons = assistance.getJSONObject(g);
-                        String consDay = cons.getString("day");
-                        if (consDay.equals(currentDate)){
-                            scanned = true;
+            if (flag) {
+                try {
+                    for (int x = 0; x < students.length(); x++) {
+                        JSONObject st;
+                        boolean scanned = false;
+                        st = students.getJSONObject(x);
+                        JSONArray assistance;
+                        assistance = st.getJSONArray("assistanceTotal");
+                        assert assistance != null;
+                        currentDate = SDF.format(new Date());
+                        for (int g = 0; g < assistance.length(); g++) {
+                            JSONObject cons = assistance.getJSONObject(g);
+                            String consDay = cons.getString("day");
+                            if (consDay.equals(currentDate)) {
+                                scanned = true;
+                            }
+                        }
+                        if (!scanned) {
+                            assist = st.optInt("assistance");
+                            st.put("assistance", assist + 1);
+                            JSONObject dayAssistance = new JSONObject();
+                            dayAssistance.put("day", currentDate);
+                            dayAssistance.put("assistance", false);
+                            assistance.put(dayAssistance);
+
                         }
                     }
-                    if(!scanned){
-                        assist = st.optInt("assistance");
-                        st.put("assistance", assist+1);
-                        JSONObject dayAssistance = new JSONObject();
-                        dayAssistance.put("day", currentDate);
-                        dayAssistance.put("assistance", false);
-                        assistance.put(dayAssistance);
-                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
 
-            transmitterTask = new TransmitterTask();
-            transmitterTask.execute(professor);
-            finish();
-        }};
+                transmitterTask = new TransmitterTask(URL);
+                transmitterTask.execute(professor);
+                finish();
+            } else {
+                AlertDialog.Builder adb = new AlertDialog.Builder(
+                        StudentActivity.this);
+                adb.setTitle("Culminación de Escaneo");
+                adb.setMessage("Recuerde que debe escanear al menos una vez a los alumnos");
+                adb.setPositiveButton("OK", null);
+                adb.show();
+            }
+        }
+    };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -264,6 +342,7 @@ public class StudentActivity extends ListActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            flag = true;
             if(BluetoothDevice.ACTION_FOUND.equals(action)) {
                 boolean scanned = false;
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -304,6 +383,10 @@ public class StudentActivity extends ListActivity {
                                     dayAssistance.put("day", currentDate);
                                     dayAssistance.put("assistance", true);
                                     assistance.put(dayAssistance);
+                                    TextView t = (TextView) findViewById(R.id.student_name);
+                                    t.setTextColor(Color.GREEN);
+                                    TextView z = (TextView) findViewById(R.id.student_lastname);
+                                    z.setTextColor(Color.GREEN);
                                     }
                             }catch (JSONException e) {
                                 e.printStackTrace();
@@ -342,6 +425,10 @@ public class StudentActivity extends ListActivity {
                                     dayAssistance.put("day", currentDate);
                                     dayAssistance.put("assistance", true);
                                     assistance.put(dayAssistance);
+                                    TextView t = (TextView) findViewById(R.id.student_name);
+                                    t.setTextColor(Color.GREEN);
+                                    TextView z = (TextView) findViewById(R.id.student_lastname);
+                                    z.setTextColor(Color.GREEN);
                                 }
                             }catch (JSONException e) {
                                 e.printStackTrace();
@@ -350,6 +437,7 @@ public class StudentActivity extends ListActivity {
                     }
                 }
                 btArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+                CheckBlueToothState();
                 btArrayAdapter.notifyDataSetChanged();
             }
         }

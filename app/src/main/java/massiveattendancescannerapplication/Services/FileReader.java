@@ -19,22 +19,18 @@ import java.io.IOException;
 public class FileReader {
 
     static String response;
-    private static final String professors = "professors.txt";
-    private static final String courses = "courses.txt";
-    private static final String sections = "sections.txt";
-    private static final String students = "students.txt";
+    private static final String url = "url.txt";
 
     /**
      * <p>
      *     This function returns the URL direction parsed from the .txt file contained in the phone.
      * </p>
      * @param context Application Context.
-     * @param method Method representing POST of GET methods.
      * @return String containing the URL.
      */
-    public static String getUrl(Context context, int method) {
+    public static String getUrl(Context context) {
         try {
-            return parse(getConfigFile(context,method));
+            return parse(getConfigFile(context));
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -48,25 +44,18 @@ public class FileReader {
      *     direction for each type.
      * </p>
      * @param context Application Context.
-     * @param method Method representing POST of GET methods.
      * @return BufferedReader containing the information inside the file.
      */
-    private static BufferedReader getConfigFile(Context context,int method) {
+    private static BufferedReader getConfigFile(Context context) {
         if(isExternalStorageReadable()){
             // Get the directory for the app's private files
-            File file = null;
+            String extr = Environment.getExternalStorageDirectory().toString();
+            File mFolder = new File(extr + "/data");
+            File file;
             try {
-                if(method == 1) file = new File(context.getExternalFilesDir(null), professors);
-                if(method == 2) file = new File(context.getExternalFilesDir(null), courses);
-                if(method == 3) file = new File(context.getExternalFilesDir(null), sections);
-                if(method == 4) file = new File(context.getExternalFilesDir(null), students);
-
-                if (file!=null) {
-                    java.io.FileReader fr = new java.io.FileReader(file);
-                    return new BufferedReader(fr);
-                }else{
-                    return null;
-                }
+                file = new File(mFolder.getAbsolutePath(), url);
+                java.io.FileReader fr = new java.io.FileReader(file);
+                return new BufferedReader(fr);
 
             } catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block

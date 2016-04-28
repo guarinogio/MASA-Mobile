@@ -5,12 +5,20 @@
     android:orientation="vertical"
     android:background="#ffffff">
 
+    <TextView
+        android:text="@string/section_intro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/textView" />
+
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:divider="#b5b5b5"
         android:dividerHeight="1dp"
+        android:background="#f5f5dc"
         android:cacheColorHint="#00000000"/>
 
 </LinearLayout>

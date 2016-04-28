@@ -17,6 +17,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
+import massiveattendancescannerapplication.Services.FileReader;
 import massiveattendancescannerapplication.Services.ServiceHandler;
 
 public class SectionActivity extends ListActivity {
@@ -28,7 +30,7 @@ public class SectionActivity extends ListActivity {
     String JSONString, course_id, course_name;
     private static final String COURSE = "courses";
     private static final String SECTION = "sections";
-    private static final String URL = "http://192.168.0.106:3000/professors/56f5fd3a20047f3c15b05f0e";
+    String URL;
     private static final String TAG_ID = "_id";
     private static final String TAG_NAME = "name";
     private static final String TAG_SEMESTER = "semester";
@@ -40,6 +42,7 @@ public class SectionActivity extends ListActivity {
         setContentView(R.layout.section_activity);
 
         Intent i = getIntent();
+        URL = FileReader.getUrl(getApplicationContext());
         course_id = i.getStringExtra("course_id");
         sectionList = new ArrayList<HashMap<String, String>>();
         new LoadSections().execute();
